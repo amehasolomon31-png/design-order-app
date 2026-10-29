@@ -117,7 +117,7 @@
 <div class="app-container">
   <div class="header">
     <h2>ጃራ ግራፊክስ እና ዲዛይን - የህትመት እና ዲዛይን ትዕዛዝ</h2>
-    <p>የሚፈልጉትን የዲዛይን አይነት እና መረጃ ያስገቡ</p>
+    <p>እባክዎ የሚፈልጉትን የዲዛይን አይነት እና መረጃ ያስገቡ</p>
   </div>
 
   <form id="orderForm">
@@ -128,7 +128,8 @@
         <option value="የቢዝነስ ካርድ">የቢዝነስ ካርድ (Business Card)</option>
         <option value="ፖስተር / ባነር">ፖስተር / ባነር (Poster / Banner)</option>
         <option value="የሶሻል ሚዲያ ፖስት">የሶሻል ሚዲያ ፖስት (Social Media Post)</option>
-        <option value="ብሮሹር / ፍላየር">ብሮሹር / ፍላየር (Brochure / Flyer)</option>
+        <option value="ብሮሹር / ፍላየር">ብሮሸር / ፍላየር (Brochure / Flyer)</option>
+        <option value="ቪዲዮ / ቪዲዮ">ቪዲዮ ኤዲትንግ / Video Editing)</option>
         <option value="ሌላ">ሌላ የህትመት ስራ</option>
       </select>
     </div>
@@ -146,7 +147,7 @@
     <!-- የቴሌብር ክፍያ ክፍል -->
     <div class="telebirr-box">
       <div class="telebirr-title">💳 የቴሌብር ክፍያ መመሪያ</div>
-      <p style="font-size: 12px; margin: 4px 0;">እባክዎን የቅድመ ክፍያ <b>100 ብር</b> በቴሌብር ቁጥር <b>09XXXXXXXX</b> ይላኩ።</p>
+      <p style="font-size: 12px; margin: 4px 0;"> ውድ ደንበኛችን እባክዎን የቅድመ ክፍያ <b>100 ብር</b> በቴሌብር ቁጥር <b>0908709631</b> ይላኩ።</p>
     </div>
 
     <div class="form-group">
@@ -155,7 +156,7 @@
       <input type="file" id="paymentScreenshot" accept="image/*" required style="padding: 8px; font-size: 13px;">
     </div>
 
-    <button type="submit" id="submitBtn" class="submit-btn">/send ትዕዛዝ አስተላልፍ</button>
+    <button type="submit" id="submitBtn" class="submit-btn">/send ይላኩ</button>
     <div id="statusMsg" class="status-msg"></div>
   </form>
 </div>
@@ -166,7 +167,7 @@
 
   // ***** እዚህ ቦታ ላይ ያንተን መረጃዎች ተካ *****
   const BOT_TOKEN = "8623927575:AAHiRtZbBY4lyLfkZ_FUW-pdA635lpafC2Y";
-  const MY_CHAT_ID = "YOUR_CHAT_ID_HERE"; // በ @userinfobot ያገኘኸውን Chat ID ቁጥር እዚህ አስገባ
+  const MY_CHAT_ID = "6109704660"; // በ @userinfobot ያገኘኸውን Chat ID ቁጥር እዚህ አስገባ
 
   document.getElementById('orderForm').addEventListener('submit', async function(e) {
     e.preventDefault();
@@ -224,7 +225,7 @@
       }
 
       statusMsg.style.color = "#4ade80";
-      statusMsg.innerText = "ትዕዛዝዎ በተሳካ ሁኔታ ተላኳል! እናመሰግናለን።";
+      statusMsg.innerText = "ትዕዛዝዎ በተሳካ ሁኔታ ተልኳል! ለደንበኝነትዎ እናመሰግናለን።";
       statusMsg.style.display = "block";
       setTimeout(() => {
         tg.close();
@@ -232,9 +233,9 @@
 
     } catch (error) {
       statusMsg.style.color = "#f87171";
-      statusMsg.innerText = "ስህተት ተፈጥሯል። እባክዎ እንደገና ይሞክሩ።";
+      statusMsg.innerText = "እባክዎ እንደገና ይሞክሩ።";
       statusMsg.style.display = "block";
-      submitBtn.innerText = "/send ትዕዛዝ አስተላልፍ";
+      submitBtn.innerText = "send / ይላኩ";
       submitBtn.disabled = false;
     }
   });
