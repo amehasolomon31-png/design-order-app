@@ -116,7 +116,7 @@
 
 <div class="app-container">
   <div class="header">
-    <h2>የህትመት እና ዲዛይን ትዕዛዝ</h2>
+    <h2>ጃራ ግራፊክስ እና ዲዛይን - የህትመት እና ዲዛይን ትዕዛዝ</h2>
     <p>የሚፈልጉትን የዲዛይን አይነት እና መረጃ ያስገቡ</p>
   </div>
 
@@ -134,7 +134,7 @@
     </div>
 
     <div class="form-group">
-      <label>የስራው/ድርጅቱ ስም እና ስልክ</label>
+      <label>የደንበኛው/የድርጅቱ ስም እና ስልክ</label>
       <input type="text" id="clientName" placeholder="ለምሳሌ፡ አበበ - 0911XXXXXX" required>
     </div>
 
@@ -146,15 +146,16 @@
     <!-- የቴሌብር ክፍያ ክፍል -->
     <div class="telebirr-box">
       <div class="telebirr-title">💳 የቴሌብር ክፍያ መመሪያ</div>
-      <p style="font-size: 12px; margin: 4px 0;">እባክዎን የቅድመ ክፍያ <b>100 ብር</b> በቴሌብር ቁጥር <b>0908709631</b> ይላኩ።</p>
+      <p style="font-size: 12px; margin: 4px 0;">እባክዎን የቅድመ ክፍያ <b>100 ብር</b> በቴሌብር ቁጥር <b>09XXXXXXXX</b> ይላኩ።</p>
     </div>
 
     <div class="form-group">
-      <label>የቴሌብር Transaction ID</label>
-      <input type="text" id="telebirrId" placeholder="ለምሳሌ፡ 9AB12CD3" required>
+      <label>የቴሌብር Transaction ID እና Screenshot (የክፍያ ማረጋገጫ ፎቶ)</label>
+      <input type="text" id="telebirrId" placeholder="Transaction ID ያስገቡ" required style="margin-bottom: 8px;">
+      <input type="file" id="paymentScreenshot" accept="image/*" required style="padding: 8px; font-size: 13px;">
     </div>
 
-    <button type="submit" id="submitBtn" class="submit-btn">ትዕዛዝ አስተላልፍ</button>
+    <button type="submit" id="submitBtn" class="submit-btn">/send ትዕዛዝ አስተላልፍ</button>
     <div id="statusMsg" class="status-msg"></div>
   </form>
 </div>
@@ -165,7 +166,7 @@
 
   // ***** እዚህ ቦታ ላይ ያንተን መረጃዎች ተካ *****
   const BOT_TOKEN = "8623927575:AAHiRtZbBY4lyLfkZ_FUW-pdA635lpafC2Y";
-  const MY_CHAT_ID = "6109704660"; // በ @userinfobot ያገኘኸውን Chat ID ቁጥር እዚህ አስገባ
+  const MY_CHAT_ID = "YOUR_CHAT_ID_HERE"; // በ @userinfobot ያገኘኸውን Chat ID ቁጥር እዚህ አስገባ
 
   document.getElementById('orderForm').addEventListener('submit', async function(e) {
     e.preventDefault();
@@ -180,18 +181,21 @@
     const client = document.getElementById('clientName').value;
     const details = document.getElementById('description').value;
     const txId = document.getElementById('telebirrId').value;
+    const screenshotFile = document.getElementById('paymentScreenshot').files[0];
 
-    // ለቴሌግራም የሚላከው የመልዕክት ቅርጽ
     const message = `
+/send
 📌 <b>አዲስ የዲዛይን ትዕዛዝ ደርሷል!</b>
 
+🏢 <b>ድርጅት:</b> ጃራ ግራፊክስ እና ዲዛይን
 🎨 <b>የዲዛይን አይነት:</b> ${service}
 👤 <b>ደንበኛ/ስልክ:</b> ${client}
 📝 <b>ዝርዝር መግለጫ:</b> ${details}
-💳 <b>Telebirr Transaction ID:</b> <code>${txId}</code>
+💳 <b>Telebirr TxID:</b> <code>${txId}</code>
     `;
 
     try {
+      // 1. የጽሁፍ መልዕክቱን መጀመሪያ መላክ
       const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
         method: 'POST',
         headers: {
@@ -204,21 +208,33 @@
         })
       });
 
-      if (response.ok) {
-        statusMsg.style.color = "#4ade80";
-        statusMsg.innerText = "ትዕዛዝዎ በተሳካ ሁኔታ ተላኳል! እናመሰግናለን።";
-        statusMsg.style.display = "block";
-        setTimeout(() => {
-          tg.close();
-        }, 2000);
-      } else {
-        throw new Error("Failed");
+      if (!response.ok) throw new Error("Text send failed");
+
+      // 2. የክፍያ ስክሪንሾት ፎቶውን መላክ (ካለ)
+      if (screenshotFile) {
+        const formData = new FormData();
+        formData.append('chat_id', MY_CHAT_ID);
+        formData.append('photo', screenshotFile);
+        formData.append('caption', `📸 የ ${client} የቴሌብር ክፍያ ስክሪንሾት (TxID: ${txId})`);
+
+        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+          method: 'POST',
+          body: formData
+        });
       }
+
+      statusMsg.style.color = "#4ade80";
+      statusMsg.innerText = "ትዕዛዝዎ በተሳካ ሁኔታ ተላኳል! እናመሰግናለን።";
+      statusMsg.style.display = "block";
+      setTimeout(() => {
+        tg.close();
+      }, 2000);
+
     } catch (error) {
       statusMsg.style.color = "#f87171";
       statusMsg.innerText = "ስህተት ተፈጥሯል። እባክዎ እንደገና ይሞክሩ።";
       statusMsg.style.display = "block";
-      submitBtn.innerText = "ትዕዛዝ አስተላልፍ";
+      submitBtn.innerText = "/send ትዕዛዝ አስተላልፍ";
       submitBtn.disabled = false;
     }
   });
